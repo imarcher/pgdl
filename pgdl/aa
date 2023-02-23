@@ -1,0 +1,24 @@
+PG_FLAGS = -I /usr/local/pgsql/include/server
+
+./bulid/pgdl.so: pgdl.o
+	gcc -shared -o ./bulid/pgdl.so pgdl.o
+
+pgdl.o: pgdl.c
+	gcc -fPIC -c pgdl.c $(PG_FLAGS)
+
+
+clean:
+	rm -rf pgdl.o ./bulid/pgdl.so
+
+
+EXTENSION = pgdl        # 扩展名称
+DATA = pgdl--1.0.sql  # 要安装的脚本文件
+MODULES = pgdl          # 要构建的c模块文件
+
+# postgres build stuff
+PG_CONFIG = pg_config
+PGXS := $(shell $(PG_CONFIG) --pgxs)
+include $(PGXS)
+
+
+$(patsubst .c,.o,$(wildcard *.c))
